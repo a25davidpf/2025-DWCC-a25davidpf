@@ -1,18 +1,37 @@
-"use strict";
-const { createApp } = Vue;
-createApp({
-  data() {
-    return {
-      awesome: true,
-    };
+let arbore = {
+  Fish: {
+    trout: {},
+    salmon: {},
   },
-  methods: {
-    toggle(awesome) {
-      if (this.awesome) {
-        this.awesome = false;
-      } else {
-        this.awesome = true;
-      }
+  Tree: {
+    Huge: {
+      sequoia: {},
+      oak: {},
+    },
+    Flowering: {
+      "apple tree": {},
+      magnolia: {},
     },
   },
-}).mount("#app");
+};
+
+function createTree(data) {
+  const body = document.querySelector("body");
+  const ul = document.createElement("ul");
+  body.append(ul);
+
+  for (let key in data) {
+    const li = document.createElement("li");
+    li.innerHTML = key;
+
+    if (Object.keys(data[key]).length > 0) {
+      li.appendChild(createTree(data[key]));
+    }
+
+    ul.appendChild(li);
+  }
+
+  return ul;
+}
+
+createTree(arbore);
