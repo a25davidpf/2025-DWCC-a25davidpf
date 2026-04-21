@@ -4,89 +4,113 @@ const buttonEngadir = document.getElementById("button");
 const borrarTodos = document.getElementById("borrarTodos");
 const inputFiltro = document.getElementById("filtro");
 const divEngadir = document.getElementById("inputElementos");
-const listaCompra = [];
+
+let listaCompra = JSON.parse(localStorage.getItem("listaCompra")) || [];
+
+function gardarLocalStorage() {
+  localStorage.setItem("listaCompra", JSON.stringify(listaCompra));
+}
+
+function actualizarBotonBorrarTodos() {
+  borrarTodos.style.display = listaCompra.length > 0 ? "block" : "none";
+}
+
+function crearElemento(texto) {
+  const li = document.createElement("li");
+  const span = document.createElement("span");
+  const buttonBorrar = document.createElement("button");
+
+  span.innerText = texto;
+  buttonBorrar.innerText = "X";
+
+  li.appendChild(span);
+  li.appendChild(buttonBorrar);
+  ul.appendChild(li);
+
+  span.addEventListener("click", () => {
+    const valorActual = span.innerText;
+    inputEngadir.value = valorActual;
+    buttonEngadir.style.display = "none";
+
+    let buttonActualizar = document.getElementById("buttonActualizar");
+
+    if (!buttonActualizar) {
+      buttonActualizar = document.createElement("button");
+      buttonActualizar.id = "buttonActualizar";
+      buttonActualizar.innerText = "Actualizar";
+      divEngadir.appendChild(buttonActualizar);
+    }
+
+    span.style.backgroundColor = "yellow";
+
+    buttonActualizar.onclick = () => {
+      const novoValor = inputEngadir.value.trim();
+
+      if (novoValor === "") {
+        alert("Error input valeiro");
+        return;
+      }
+
+      const index = listaCompra.indexOf(valorActual);
+      if (index !== -1) {
+        listaCompra[index] = novoValor;
+        gardarLocalStorage();
+      }
+
+      span.innerText = novoValor;
+      span.style.backgroundColor = "";
+      inputEngadir.value = "";
+      buttonActualizar.remove();
+      buttonEngadir.style.display = "inline-block";
+    };
+  });
+
+
+  buttonBorrar.addEventListener("click", () => {
+    if (window.confirm("Seguro que queres eliminar este elemento?")) {
+      const textoElemento = span.innerText;
+      const index = listaCompra.indexOf(textoElemento);
+
+      if (index !== -1) {
+        listaCompra.splice(index, 1);
+        gardarLocalStorage();
+      }
+
+      li.remove();
+      actualizarBotonBorrarTodos();
+    }
+  });
+}
 
 document.addEventListener("DOMContentLoaded", () => {
-  const ultimaLista = JSON.parse(localStorage.getItem("listaCompra"));
+  listaCompra.forEach((elemento) => {
+    crearElemento(elemento);
+  });
 
-  console.log(ultimaLista);
-
-  if (ultimaLista.length > 0) {
-    ultimaLista.forEach((elements) => {
-      console.log(elements);
-      const span = document.createElement("span");
-      const li = document.createElement("li");
-      ul.append(li);
-      li.append(span);
-      span.append(elements);
-      const buttonBorrar = document.createElement("button");
-      buttonBorrar.innerText = "X";
-      li.append(buttonBorrar);
-      borrarTodos.style.display = "block";
-    });
-  }
+  actualizarBotonBorrarTodos();
 });
 
 buttonEngadir.addEventListener("click", () => {
-  const span = document.createElement("span");
-  const li = document.createElement("li");
-  if (inputEngadir.value === "") {
+  const texto = inputEngadir.value.trim();
+
+  if (texto === "") {
     alert("Error input valeiro");
-  } else {
-    ul.append(li);
-    li.append(span);
-    span.append(inputEngadir.value);
-    listaCompra.push(span.innerText);
-    console.log(listaCompra);
-    localStorage.setItem("listaCompra", JSON.stringify(listaCompra));
-    inputEngadir.value = "";
-    const buttonBorrar = document.createElement("button");
-    buttonBorrar.innerText = "X";
-    li.append(buttonBorrar);
-    borrarTodos.style.display = "block";
-    span.addEventListener("click", () => {
-      const valorActual = span.innerText;
-      inputEngadir.value = valorActual;
-      buttonEngadir.remove();
-      const buttonActualizar = document.createElement("button");
-      divEngadir.append(buttonActualizar);
-      buttonActualizar.append("Actualizar");
-      span.style.backgroundColor = "yellow";
-      buttonActualizar.addEventListener("click", () => {
-        span.innerText = inputEngadir.value;
-        span.style.backgroundColor = "white";
-        inputEngadir.value = "";
-        buttonActualizar.remove();
-        divEngadir.append(buttonEngadir);
-      });
-    });
-    buttonBorrar.addEventListener("click", () => {
-      if (window.confirm("Seguro que queres eliminar este elemento?")) {
-        const span = buttonBorrar.previousSibling;
-        const index = listaCompra.indexOf(span.innerText);
-        console.log(index);
-        if (index !== -1) {
-          listaCompra.splice(index, 1);
-          localStorage.setItem("listaCompra", JSON.stringify(listaCompra));
-        }
-        console.log(listaCompra);
-        buttonBorrar.parentNode.remove();
-      }
-      if (ul.children.length > 0) {
-        borrarTodos.style.display = "block";
-      } else {
-        borrarTodos.style.display = "none";
-      }
-    });
+    return;
   }
+
+  listaCompra.push(texto);
+  gardarLocalStorage();
+  crearElemento(texto);
+
+  inputEngadir.value = "";
+  actualizarBotonBorrarTodos();
 });
 
 borrarTodos.addEventListener("click", () => {
   ul.innerHTML = "";
-  borrarTodos.style.display = "none";
-  listaCompra.length = 0;
-  console.log(listaCompra);
-  localStorage.setItem("listaCompra", JSON.stringify(listaCompra));
+  listaCompra = [];
+  gardarLocalStorage();
+  actualizarBotonBorrarTodos();
 });
 
 inputFiltro.addEventListener("input", () => {
@@ -97,10 +121,6 @@ inputFiltro.addEventListener("input", () => {
     const span = li.querySelector("span");
     const texto = span.innerText.toLowerCase();
 
-    if (texto.indexOf(valor) !== -1) {
-      li.style.display = "block";
-    } else {
-      li.style.display = "none";
-    }
+    li.style.display = texto.includes(valor) ? "block" : "none";
   });
 });
