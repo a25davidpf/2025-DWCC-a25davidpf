@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <div id="app">
+      <p :class="{red: isRed}" @click="alternar"></p>
+      <p :class="{green: isGreen, yellow: isYellow}" @click="cambiarColor"></p>
+    </div>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script>
+      const { createApp } = Vue;
+      createApp({
+        data() {
+          return {
+            isRed: true,
+            isGreen: true,
+            isYellow: false,
+          };
+        },
+        methods: {
+          alternar() {
+            this.isRed = !this.isRed;
+          },
+
+          cambiarColor() {
+            this.isGreen = !this.isGreen;
+            this.isYellow = !this.isYellow;
+          },
+        },
+      }).mount('#app');
+    </script>
+  </body>
+  <style>
+    .green {
+      background-color: green;
+    }
+    .yellow {
+      background-color: yellow;
+    }
+    .red {
+      background-color: red;
+    }
+    p {
+      border: 1px solid black;
+      padding: 20px;
+    }
+  </style>
+</html>
