@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <div id="app">
+      <input type="text" v-model="clase" />
+      <p :class="[clase, visibilidad ? 'visible' : 'hidden']"></p>
+      <br /><br />
+      <button @click="isVisible">Visibilidad</button>
+    </div>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script>
+      const { createApp } = Vue;
+      createApp({
+        data() {
+          return {
+            clase: '',
+            visibilidad: true,
+          };
+        },
+        methods: {
+          isVisible() {
+            this.visibilidad = !this.visibilidad;
+          },
+        },
+      }).mount('#app');
+    </script>
+  </body>
+  <style>
+    .claseA {
+      background-color: red;
+    }
+    .claseB {
+      background-color: blue;
+    }
+    .hidden {
+      display: none;
+    }
+    .visible {
+      display: block;
+    }
+    p {
+      border: 1px solid black;
+      padding: 20px;
+    }
+  </style>
+</html>

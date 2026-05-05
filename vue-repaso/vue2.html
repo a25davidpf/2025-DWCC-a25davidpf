@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div id="app">
+        KM: <input type="number" v-model="km" @input="deKm">
+        <br>
+        M: <input type="number" v-model="m" @input="deM">
+    </div>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script>
+        const { createApp } = Vue;
+        createApp({
+            data() {
+                return {
+                    km:0,
+                    m:0,
+                };
+            },
+            methods: {
+                deKm() {
+                    this.m = this.km * 1000;
+                },
+                deM() {
+                    this.km = this.m / 1000;
+                }
+            },
+        }).mount("#app");
+    </script>
+</body
+
