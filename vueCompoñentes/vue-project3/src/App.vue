@@ -1,28 +1,32 @@
 <script>
+import Formulario from "./components/Formulario.vue";
 import Informacion from "./components/Informacion.vue";
 
 export default {
   data() {
     return {
-      persoas: [
-        {
-          nome: "david",
-          anoNacemento: 2006,
-        },
-      ],
+      persoa: {
+        nome: "david",
+        anoNacemento: 2006,
+      },
     };
   },
-  methods: {},
+  methods: {
+    enviarFormulario(nomeForm, anoForm) {
+      this.persoa.nome = nomeForm;
+      this.persoa.anoNacemento = Number(anoForm);
+    },
+  },
 };
 </script>
 
 <template>
-  <Informacion
-    v-for="(persoa, index) in persoas"
-    :key="index"
+  <Informacion :nome="persoa.nome" :anoNacemento="persoa.anoNacemento" />
+  <Formulario
+    @actualizar="enviarFormulario"
     :nome="persoa.nome"
     :anoNacemento="persoa.anoNacemento"
-  />
+  ></Formulario>
 </template>
 
 <style></style>

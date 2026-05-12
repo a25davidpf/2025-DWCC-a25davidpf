@@ -4,19 +4,17 @@ export default {
     nome: String,
     anoNacemento: {
       type: Number,
-      required: true,
     },
   },
-  data: {
-    nomeForm: this.nome,
-    anoForm: this.anoNacemento,
+  data() {
+    return {
+      nomeForm: this.nome,
+      anoForm: this.anoNacemento,
+    };
   },
   methods: {
     enviarFormulario() {
-      this.$emit("actualizar", {
-        nome: this.formNome,
-        anoNacemento: Number(this.formAno),
-      });
+      this.$emit("actualizar", this.nomeForm, this.anoForm);
     },
   },
 };
