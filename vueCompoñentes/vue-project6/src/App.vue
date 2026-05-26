@@ -1,31 +1,77 @@
 <script>
+import ListaPersoas from "./components/ListaPersoas.vue";
+import FormPersoa from "./components/FormPersoa.vue";
+import { computed } from "vue";
+
 export default {
+  components: {
+    ListaPersoas,
+    FormPersoa,
+  },
+
   data() {
     return {
       persoas: [
         {
           nome: "Ada",
-          apelido: "Lovelance",
+          apelido: "Lovelace",
         },
         {
           nome: "Ángela",
           apelido: "Ruiz",
         },
       ],
-      filtro: "",
       novoNome: "",
       novoApelido: "",
+      filtro: "",
+      persoaSeleccionada: null,
     };
   },
-  computed: {
-    num() {
-      return this.persoas.length;
-    },
+
+  provide() {
+    return {
+      persoas: this.persoas,
+      novoNome: computed(() => this.novoNome),
+      novoApelido: computed(() => this.novoApelido),
+      filtro: computed(() => this.filtro),
+    };
   },
+
   methods: {
     seleccionar(persoa) {
+      this.persoaSeleccionada = persoa;
+
       this.novoNome = persoa.nome;
       this.novoApelido = persoa.apelido;
+    },
+
+    actualizar() {
+      if (this.persoaSeleccionada) {
+        this.persoaSeleccionada.nome = this.novoNome;
+        this.persoaSeleccionada.apelido = this.novoApelido;
+      }
+    },
+
+    engadir() {
+      this.persoas.push({
+        nome: this.novoNome,
+        apelido: this.novoApelido,
+      });
+
+      this.novoNome = "";
+      this.novoApelido = "";
+    },
+
+    borrar() {
+      if (this.persoaSeleccionada) {
+        const index = this.persoas.indexOf(this.persoaSeleccionada);
+        this.persoas.splice(index, 1);
+
+        this.novoNome = "";
+        this.novoApelido = "";
+
+        this.persoaSeleccionada = null;
+      }
     },
   },
 };
@@ -34,31 +80,24 @@ export default {
 <template>
   <div class="container">
     <h2>Lista de persoas</h2>
-    <input type="text" placeholder="Filtrar por apelido" />
+
+    <ListaPersoas
+      :persoas="persoas"
+      :filtro="filtro"
+      @seleccionar="seleccionar"
+      @update:filtro="filtro = $event"
+    />
     <br />
-    <div>
-      <select :size="num">
-        <option
-          v-for="persoa in persoas"
-          :key="index"
-          @click="seleccionar(persoa)"
-        >
-          {{ persoa.apelido }}, {{ persoa.nome }}
-        </option>
-      </select>
-    </div>
+    <FormPersoa
+      :novoNome="novoNome"
+      :novoApelido="novoApelido"
+      @update:nome="novoNome = $event"
+      @update:apelido="novoApelido = $event"
+      @engadir="engadir"
+      @actualizar="actualizar"
+      @borrar="borrar"
+    />
     <br />
-    <span>Nome:</span>
-    <input type="text" v-model="novoNome" />
-    <br />
-    <span>Apelido:</span>
-    <input type="text" v-model="novoApelido" />
-    <br />
-    <div class="botons">
-      <button>Engadir</button>
-      <button>Actualizar</button>
-      <button>Borrar</button>
-    </div>
   </div>
 </template>
 
@@ -67,9 +106,5 @@ export default {
   display: flex;
   align-items: center;
   flex-direction: column;
-}
-.botons {
-  display: flex;
-  gap: 10px;
 }
 </style>

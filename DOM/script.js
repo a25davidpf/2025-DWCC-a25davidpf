@@ -1,13 +1,3 @@
-const div = document.body.firstElementChild;
-console.log(div);
-
-const ul = document.body.firstElementChild.nextElementSibling;
-console.log(ul);
-
-const secondLi =
-  document.body.firstElementChild.nextElementSibling.lastElementChild;
-console.log(secondLi);
-
 const table = document.getElementsByTagName("table")[0];
 let i = 0;
 let x = 0;
@@ -25,7 +15,6 @@ for (i; i < numRows; i++) {
 
   for (x; x < numCells; x++) {
     cell = row.cells[x];
-    // console.log(row.cells[x]);
     if (i == x) {
       cell.style.backgroundColor = "red";
     }
@@ -87,27 +76,3 @@ borrarTaboa.addEventListener(
   },
   { once: true },
 );
-
-let arbore = {
-  Fish: {
-    trout: {},
-    salmon: {},
-  },
-  Tree: {
-    Huge: {
-      sequoia: {},
-      oak: {},
-    },
-    Flowering: {
-      "apple tree": {},
-      magnolia: {},
-    },
-  },
-};
-
-console.log(arbore);
-
-const fish = arbore.Fish;
-const trout = arbore.Fish.trout;
-console.log(fish);
-console.log(trout);
